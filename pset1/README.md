@@ -55,11 +55,15 @@ Before the last announcement date available, the ticket price was R$ 2. This inf
 
 ## 5. Reproducing results
 
-After opening the project folder in VSCode, run the following in the terminal to build and activate a virtual environment and install dependencies.
+After opening the **pset1 folder in VSCode**, run the following in the terminal to build and activate a virtual environment and install dependencies.
 ```text
 python -m venv .venv
+FOR MAC USERS: try python3 -m venv .venv
+
 .venv\Scripts\activate
+FOR MAC USERS: try .venv\bin\activate
+
 pip install -r requirements.txt
 ```
 
-After downloading the results data and ensuring the spreadsheet has the same structure as in the example in `data/raw`, the results in the report can be reproduced running `data_treatment.py`, then `analysis.py` afterwards in the `code` folder. This will populate the `output` folder with the results.
+After downloading the results data and ensuring the spreadsheet has the same structure as in the example in `data/raw`, the results in the report can be reproduced running `data_treatment.py`, then `analysis.py` afterwards in the `code` folder. This will populate the `output` folder with the results. 

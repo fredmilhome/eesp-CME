@@ -53,7 +53,7 @@ def parse_brl_currency(x: str) -> float:
 
 
 # Read the .xlsx file into a DataFrame
-df = pd.read_excel('data/raw/Mega-Sena.xlsx')
+df = pd.read_excel('data/raw/Mega-Sena.xlsx', engine='openpyxl')
 
 # Save original column names
 orig_cols = list(df.columns)
