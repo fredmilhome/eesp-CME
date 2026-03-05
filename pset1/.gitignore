@@ -8,7 +8,7 @@ __pycache__/
 data/raw/Mega-Sena.xlsx
 
 # Processed data
-data/processed/*.csv
+data/processed/*
 
 # Output files
 output/figures/*
@@ -17,4 +17,5 @@ output/tables/*
 # Keep folder structure via existing .gitignore placeholder files
 !output/figures/.gitignore
 !output/tables/.gitignore
+!data/processed/.gitignore
 !data/raw/.gitignore
