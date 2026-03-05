@@ -9,7 +9,7 @@ Fred Milhome, Sao Paulo School of Economics - FGV, fred.milhome@fgv.br
 
 This repository contains the analysis code and instructions to obtain the data necessary to replicate the results in the report named:
 
-> *FredMilhome_CME_pset1*  
+> *FredMilhome_pset1_CME*  
 > Fred Milhome
 
 The replication package reproduces **all tables, figures, and numbers** in the report.
@@ -22,13 +22,13 @@ The replication package reproduces **all tables, figures, and numbers** in the r
 .
 ├── data/
 │   ├── raw/                          # Placeholder for original raw data
-│   │   ├── Mega-Sena.xlsx/           # Results data (read about access below)
+│   │   ├── Mega-Sena.xlsx/           # Results data (read about access below, not commited)
+│   │   ├── Mega-Sena - example.xlsx/ # Results data structure example
 │   │   └── ticket_price_history.csv
 │   └── processed/                    # Placeholder for cleaned and analysis-ready data
 ├── code/
 │   ├── data_treatment.py/            # Parses the raw data and uses it to build additional series
-│   ├── analysis.py                   # Code to answer parts a and e
-│   └── README.md                     # Code-specific documentation
+│   └── analysis.py                   # Code to answer parts a and e
 ├── output/
 │   ├── tables/
 │   └── figures/
@@ -62,4 +62,4 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-After downloading the results data and ensuring the spreadsheet has the same structure as in the example in `data/raw`, the results in the report can be reproduced in the `output` folder running `data_treatment.py`, then `analysis.py` in the `code` folder.
+After downloading the results data and ensuring the spreadsheet has the same structure as in the example in `data/raw`, the results in the report can be reproduced running `data_treatment.py`, then `analysis.py` afterwards in the `code` folder. This will populate the `output` folder with the results.

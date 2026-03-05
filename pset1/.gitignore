@@ -14,6 +14,10 @@ data/processed/*
 output/figures/*
 output/tables/*
 
+# PDF files
+FredMilhome_pset1_CME.pdf
+pset1.pdf
+
 # Keep folder structure via existing .gitignore placeholder files
 !output/figures/.gitignore
 !output/tables/.gitignore
