@@ -1,0 +1,20 @@
+# Python environment
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Raw data (large/proprietary files)
+data/raw/Mega-Sena.xlsx
+
+# Processed data
+data/processed/*.csv
+
+# Output files
+output/figures/*
+output/tables/*
+
+# Keep folder structure via existing .gitignore placeholder files
+!output/figures/.gitignore
+!output/tables/.gitignore
+!data/raw/.gitignore
