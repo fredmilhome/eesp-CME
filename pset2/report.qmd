@@ -1,0 +1,116 @@
+---
+title: "Problem Set 2 - Interpolation"
+author: "Fred Milhome"
+date: "March 2026"
+format:
+  pdf:
+    toc: false
+    number-sections: false
+execute:
+  echo: false
+  warning: false
+  message: false
+jupyter: julia-1.12
+---
+
+# Question 1: Life Expectancy Interpolation
+
+Below is a plot of the life expectancy data points and the linear interpolation function constructed from those points. The code prints the interpolated value for 1996 as 69,23 years.
+
+![Life expectancy linear interpolation](output/figures/life_expectancy_interp.png)
+
+\newpage
+
+# Questions 2 and 3: Interpolation Comparison
+
+To leverage on the DRY principle, I chose to answer both questions simultaneously, which gives us a comparison of the combinations of interpolation method and grid spacing, and allows us to see how the fit for each of those combinations improve for each grid granularity choice.
+
+## Items a-b, e
+In the `compare_interp` script, these steps were executed in a way that the sample is drawn only once for each distribution, and a helper function `generate_grid` was created to generate the grid for each of the two spacing choices. The main helper function is `compare_interp`, which evaluates the three interpolation methods for each combination of distribution, spacing, and grid granularity choice, and returns the MSE and timing results for each of those combinations. For better efficiency, in the benchmarking step, the three interpolation methods are parallelized, and 10.000 samples are drawn for each of those methods to get a more stable estimate of the timing results. The script also runs the main loop to solve the exercises.
+
+## Items c and d
+
+### Panel Plots by Grid Size
+
+![Fit comparison for 10 points in the grid](output/figures/panel_interp_t10.png)
+
+Note that the fit for the Log Logistic CDF is very good even for the coarsest grid, independently of spacing choice or interpolation method, since the function doesn't have much curvature. 
+
+\newpage
+
+![Fit comparison for 15 points in the grid](output/figures/panel_interp_t15.png)
+
+For the Pareto PDF, the fit is very poor for the first two coarsest grids, and for different reasons depending on the interpolation method. 
+
+With linear interpolation, a straight line hardly represents well the curvature in the left region of the function. This is greatly improved with log spacing, which places more points in that region. With the cubic spline, we face the problem of overshooting, as this method places constraints on the continuity of the first and second derivatives, which leads to having distant points (the ones from the flatter region of the function) influence the fit in the left region, which has a lot of curvature. We see that PCHIP is able to preserve monotonicity, while marginally improving the MSE. 
+
+In general, the fit improves the most when we use log spacing, which is good if one has to stick to a coarse grid in an application with a very curved function. Then, the choice of interpolation method can be important for desired properties of the fit, such as monotonicity or desired continuity of derivatives. 
+
+![Fit comparison for 20 points in the grid](output/figures/panel_interp_t20.png)
+
+![Fit comparison for 30 points in the grid](output/figures/panel_interp_t30.png)
+
+As we increase the number of points in the grid, the fit improves for all combinations of interpolation method and spacing choice, but the differences between them become less pronounced.
+
+![Fit comparison for 50 points in the grid](output/figures/panel_interp_t50.png)
+
+## MSE and Timing Tables
+
+Now we stick to analyzing the MSE and timing results for each of the combinations of interpolation method and spacing choice, for each of the two distributions. The tables below show that, not surprisingly, the MSE decreases as we increase the number of points in the grid, and that log spacing generally leads to a lower MSE than linear spacing, especially for the Pareto PDF. The timing results show that linear interpolation is generally faster than cubic spline and PCHIP as expected. In this implementation, cubic spline is approximately 10x slower than PCHIP, which is a bit surprising, but it can be due to package implementation differences.
+
+Another interesting observation is that the timing results seem to increase with log spacing for the two more complex interpolation methods.
+
+```{julia}
+#| include: false
+using CSV, DataFrames, Printf
+
+function render_grouped_mse_time_table(csv_path::String)
+  df = CSV.read(csv_path, DataFrame)
+
+  println("\\begin{center}")
+  println("\\begin{tabular}{r rr rr rr}")
+  println("\\hline")
+  println(" & \\multicolumn{2}{c}{Linear} & \\multicolumn{2}{c}{Spline} & \\multicolumn{2}{c}{PCHIP} \\\\")
+  println("Grid Size (t) & MSE & Time (ns) & MSE & Time (ns) & MSE & Time (ns) \\\\")
+  println("\\hline")
+
+  for row in eachrow(df)
+    @printf("%d & %.4g & %.0f & %.4g & %.0f & %.4g & %.0f \\\\\n",
+        row.t_size, row.lin_mse, row.lin_time, row.spl_mse, row.spl_time, row.pchip_mse, row.pchip_time)
+  end
+
+  println("\\hline")
+  println("\\end{tabular}")
+  println("\\end{center}")
+end
+```
+
+### Pareto PDF — Linear Spacing
+
+```{julia}
+#| output: asis
+render_grouped_mse_time_table("output/tables/mse_times_Pareto_PDF_linear.csv")
+```
+
+### Pareto PDF — Log Spacing
+
+```{julia}
+#| output: asis
+render_grouped_mse_time_table("output/tables/mse_times_Pareto_PDF_log.csv")
+```
+
+For the Log-Logistic CDF, the MSE is very low for all combinations of interpolation method and spacing choice, as we saw earlier. Timing results are also very similar for this function to the ones for the Pareto PDF.
+
+### Log-Logistic CDF — Linear Spacing
+
+```{julia}
+#| output: asis
+render_grouped_mse_time_table("output/tables/mse_times_Log-Logistic_CDF_linear.csv")
+```
+
+### Log-Logistic CDF — Log Spacing
+
+```{julia}
+#| output: asis
+render_grouped_mse_time_table("output/tables/mse_times_Log-Logistic_CDF_log.csv")
+```
