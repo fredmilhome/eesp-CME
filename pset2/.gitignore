@@ -1,17 +1,7 @@
-# Processed data
-/data/processed/*
-
-# Generated outputs (figures, tables, logs)
-/output/figures/*
-/output/tables/*
-
-# Keep folder structure tracked
-!/output/figures/
-!/output/tables/
-!/output/figures/.gitignore
-!/output/tables/.gitignore
-!/data/raw/.gitignore
-!/data/processed/.gitignore
+# Quarto artifacts generated locally
+/FredMilhome_pset2_CME.pdf
+/report.pdf
+/.quarto/
 
 # Julia local cache/artifacts that may appear in project folders
 *.jl.cov

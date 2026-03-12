@@ -6,12 +6,15 @@ format:
   pdf:
     toc: false
     number-sections: false
+    output-file: "FredMilhome_pset2_CME.pdf"
 execute:
   echo: false
   warning: false
   message: false
 jupyter: julia-1.12
 ---
+
+To reproduce the results in this report, get the replication files in [my GitHub repository pset2 folder](https://github.com/fredmilhome/eesp-CME/tree/main/pset2) and follow the README.md.
 
 # Question 1: Life Expectancy Interpolation
 
@@ -56,7 +59,7 @@ As we increase the number of points in the grid, the fit improves for all combin
 
 ## MSE and Timing Tables
 
-Now we stick to analyzing the MSE and timing results for each of the combinations of interpolation method and spacing choice, for each of the two distributions. The tables below show that, not surprisingly, the MSE decreases as we increase the number of points in the grid, and that log spacing generally leads to a lower MSE than linear spacing, especially for the Pareto PDF. The timing results show that linear interpolation is generally faster than cubic spline and PCHIP as expected. In this implementation, cubic spline is approximately 10x slower than PCHIP, which is a bit surprising, but it can be due to package implementation differences.
+Now I stick to analyzing the MSE and timing results for each of the combinations of interpolation method and spacing choice, for each of the two distributions. The tables below show that, not surprisingly, the MSE decreases as we increase the number of points in the grid, and that log spacing generally leads to a lower MSE than linear spacing, especially for the Pareto PDF. The timing results show that linear interpolation is generally faster than cubic spline and PCHIP as expected. In this implementation, cubic spline is approximately 10x slower than PCHIP, which is a bit surprising, but it can be due to package implementation differences.
 
 Another interesting observation is that the timing results seem to increase with log spacing for the two more complex interpolation methods.
 
@@ -113,4 +116,57 @@ render_grouped_mse_time_table("output/tables/mse_times_Log-Logistic_CDF_linear.c
 ```{julia}
 #| output: asis
 render_grouped_mse_time_table("output/tables/mse_times_Log-Logistic_CDF_log.csv")
+```
+
+# Question 4: Root Finding
+
+For this exercise, I implemented the three root finding methods in the `RootFinding` submodule building upon the functions in the lecture notes, with small defensive programming improvements.
+
+```{julia}
+#| echo: true
+#| output: false
+include(joinpath(@__DIR__, "code", "SubModules", "RootFinding.jl"))
+# Function to interpolate
+f(x) = x^3 + 2x + 5
+
+# Derivative of the function for Newton-Raphson
+df(x) = 3x^2 + 2
+```
+
+I naively search an interval which brackets the root looking outward. For this function with a single root, this works fine, but we have to be careful with multiple roots.
+
+```{julia}
+#| echo: true
+# Bracketing the root, starting with a small interval and outward looking
+a = -1
+b = 1
+
+while f(a) * f(b) > 0
+    a -= 1
+    b += 1
+end
+println("Bracketing interval: [", a, ", ", b, "]")
+```
+
+Then I run the three methods to get the number of iterations to achieve the desired tolerance.
+
+```{julia}
+#| echo: true
+#| output: false
+bisection_root, bisection_iters = RootFinding.bisection(f, a, b, tol=1e-8)
+secant_root, secant_iters = RootFinding.secant(f, a, b, tol=1e-8)
+newton_root, newton_iters = RootFinding.newton_raphson(f, df, (a+b)/2, tol=1e-8)
+```
+
+```{julia}
+#| echo: false
+#| output: true
+println("Number of iterations by method")
+println("================================")
+println("Bisection: ", bisection_iters)
+println("Secant: ", secant_iters)
+# For NR, I use the midpoint of the bracketing interval as the initial guess
+println("Newton-Raphson: ", newton_iters)
+println("")
+@printf("Root = %.4f\n", bisection_root)
 ```
