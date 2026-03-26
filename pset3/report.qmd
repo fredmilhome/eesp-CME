@@ -92,38 +92,7 @@ pretty_table(io,
 display("text/latex", String(take!(io)))
 ```
 
-If we started with $x_0 = 10$ for Nelder-Mead and Gradient Descent, they would have managed to find the global minimum, as we can see below (code snippet omitted). 
-
-```{julia}
-#| echo: false
-#| output: true
-
-myf = x -> x * sin(5x)
-
-lb_opt = [0.0]
-ub_opt = [10.0]
-
-optimizers = [NelderMeadI(x0=10),
-              GradientDescentI(x0=10),
-              CRSI(lb=lb_opt, ub=ub_opt, N_args=1, pop = 300, maxeval = 150),
-              SimAnnI(lb=0.0, ub=10.0, x0=10, temp_schedule_par = 0.5, maxiter=250)]
-
-names   = ["Nelder-Mead", "Gradient Descent", "CRS", "Simulated Annealing"]
-results = [numoptimize(myf, opt) for opt in optimizers]
-
-io = IOBuffer()
-pretty_table(io,
-    DataFrame(
-        Algorithm  = names,
-        Minimizer  = [r.minimizer[1] for r in results],
-        f_min      = [r.f_min       for r in results],
-        f_evals    = [r.f_evals     for r in results]
-    );
-    column_labels = ["Algorithm", "Minimizer", LatexCell("\$f^*\$"), "Function Evaluations"],
-    formatters    = [(v, i, j) -> j ∈ (2,3) ? @sprintf("%.6f", v) : v],
-    backend       = :latex)
-display("text/latex", String(take!(io)))
-```
+If we started with $x_0 = 10$ for Nelder-Mead and Gradient Descent, it is possible they would have a better shot at finding the same minimum as the other algorithms, but we saw they're very sensible to the initial choice of $x_0$.
 
 # Part 2: Minimizing the quadratic difference
 
@@ -270,6 +239,7 @@ end
 
 # Part 5: Differentiation
 
+The block below computes the table with possible hsteps and orders for the central finite difference method, and the numerical derivatives and errors from the analytical derivatives.
 
 ```{julia}
 #| output: false
@@ -320,5 +290,6 @@ io = IOBuffer()
 pretty_table(io, data; column_labels, formatters = [fmt], backend = :latex)
 display("text/latex", String(take!(io)))
 ```
+
 
 We can see above that the error from the analytical derivative generally decreases as we increase the order of the method and decrease the step size, which is what we would expect. However, for very small step sizes, the error starts to increase again due to numerical issues.
