@@ -29,6 +29,11 @@ isempty(to_add) || Pkg.add(to_add)
 Pkg.instantiate()   # download any packages not yet installed locally
 Pkg.precompile()    # precompile all packages for faster loading in future sessions
 
+# Install the Julia 1.12 Jupyter kernel (ID: julia-1.12, used by report.qmd).
+# Skipped when included from inside a running Jupyter/Quarto session.
+import IJulia
+IJulia.inited || IJulia.installkernel("Julia 1.12")
+
 # ------------------------------------------------------------
 # Define main project directories
 # ------------------------------------------------------------

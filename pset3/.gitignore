@@ -1,10 +1,18 @@
 # Quarto artifacts generated locally
-/FredMilhome_pset2_CME.pdf
+/FredMilhome_pset3_CME.pdf
 /report.pdf
 /.quarto/
+/.vdoc.*.jl
 
-# Julia local cache/artifacts that may appear in project folders
+# Julia local cache/artifacts
 *.jl.cov
 *.jl.mem
 
+# Generated figures (reproduced by rendering)
+/figures/
+
+# Julia environment lockfile (generated locally by setup_env.jl)
+/Manifest.toml
+
+# Assignment statement PDF
 /pset3.pdf
