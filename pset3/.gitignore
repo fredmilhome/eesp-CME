@@ -1,0 +1,10 @@
+# Quarto artifacts generated locally
+/FredMilhome_pset2_CME.pdf
+/report.pdf
+/.quarto/
+
+# Julia local cache/artifacts that may appear in project folders
+*.jl.cov
+*.jl.mem
+
+/pset3.pdf
